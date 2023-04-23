@@ -1,2 +1,2 @@
-# resolve_bufr_sequence
+# Resolve BUFR sequence
 - Simple tool to find out BUFR secrets.
