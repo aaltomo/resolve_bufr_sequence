@@ -11,6 +11,13 @@ import argparse
 already_read = []
 
 
+class bcolors:
+    PURPLE = "\033[95m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    EOC = "\033[0m"
+
+
 def resolve_sequence(sequence):
     """
     Resolve a BUFR sequence. Omit sequences that have already printed.
@@ -18,7 +25,7 @@ def resolve_sequence(sequence):
     if sequence in already_read:
         pass
     else:
-        print(f"[{sequence}]")
+        print(f"{bcolors.BLUE}[{sequence}]{bcolors.EOC}")
         already_read.append(sequence)
         template = read_sequence(sequence)
         for t in template:
@@ -61,7 +68,7 @@ def print_key(key):
     # elif key.startswith(str(2)):
     #    print("Operator")
     elif key.startswith(str(1)):
-        print(f"   [{key}]")
+        print(f"{bcolors.PURPLE}    [{key}]{bcolors.EOC}")
     elif key.startswith(str(0)) and len(key) > 1:
         print_descr(key)
 
@@ -74,7 +81,7 @@ def print_descr(descr):
         for line in f:
             if re.match(descr, line):  # match descriptor
                 final = line.split("|")
-                print(f"\t{final[0]}-->{final[1]}")
+                print(f"{bcolors.GREEN}\t{final[0]}{bcolors.EOC}-->{final[1]}")
                 break
 
 
@@ -85,7 +92,7 @@ def print_centre(id):
     with open(centrefile) as f:
         for line in f:
             if re.match(id, line):  # match descriptor
-                print(line)
+                print(f"{bcolors.GREEN}{line}{bcolors.EOC}")
                 break
 
 
