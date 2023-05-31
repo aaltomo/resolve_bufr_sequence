@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--sequence", help="BUFR sequence to decode (e.g. 307080)")
-    parser.add_argument("-k", "--key", help="BUFR key to decode (e.g. 007001)")
+    parser.add_argument("-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)")
     parser.add_argument("-c", "--centre", help="BUFR centre to decode")
 
     args = parser.parse_args()
@@ -120,8 +120,8 @@ if __name__ == "__main__":
     if args.sequence:
         print(f"Using: {root} with WMO tables {wmo_table_number}.")
         resolve_sequence(args.sequence)
-    elif args.key:
-        print_key(args.key)
+    elif args.descriptor:
+        print_content(args.descriptor)
     elif args.centre:
         print_centre(args.centre)
 
