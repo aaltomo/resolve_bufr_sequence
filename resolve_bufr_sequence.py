@@ -56,6 +56,7 @@ def read_sequence(sequence):
                     started = False
                 else:
                     started = True
+        elements = list(filter(None, elements)) #  Remove empty
         return elements
 
 
@@ -63,7 +64,7 @@ def print_content(templ):
     """
     Print sequence, repeater or element
     """
-    if templ.startswith(str(3)) and len(templ) > 1:
+    if templ.startswith(str(3)) and len(templ) == 6: #  e.g. 307080
         resolve_sequence(templ)  #  We need to go deeper
     # elif templ.startswith(str(2)):
     #    print("Operator")
@@ -71,6 +72,8 @@ def print_content(templ):
         print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
     elif templ.startswith(str(0)) and len(templ) > 1:
         print_descr(templ)
+    else:
+        print(f"No match for {templ}? Strange.")
 
 
 def print_descr(descr):
