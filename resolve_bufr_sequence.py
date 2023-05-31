@@ -29,7 +29,7 @@ def resolve_sequence(sequence):
         already_read.append(sequence)
         template = read_sequence(sequence)
         for t in template:
-            print_key(t)
+            print_content(t)
 
 
 def read_sequence(sequence):
@@ -48,7 +48,7 @@ def read_sequence(sequence):
                     elements.append(n)
             if end in line:
                 started = False
-            if re.match(rf"^\"{sequence}", line):  # match sequence
+            if re.match(rf"^\"{sequence}\" =", line):  # match sequence
                 result = re.split(r"\W+", line)
                 for n in result:
                     elements.append(n)
@@ -59,18 +59,18 @@ def read_sequence(sequence):
         return elements
 
 
-def print_key(key):
+def print_content(templ):
     """
-    Print a key(sequence, repeater or element)
+    Print sequence, repeater or element
     """
-    if key.startswith(str(3)) and len(key) > 1:
-        resolve_sequence(key)
-    # elif key.startswith(str(2)):
+    if templ.startswith(str(3)) and len(templ) > 1:
+        resolve_sequence(templ)  #  We need to go deeper
+    # elif templ.startswith(str(2)):
     #    print("Operator")
-    elif key.startswith(str(1)):
-        print(f"{bcolors.PURPLE}    [{key}]{bcolors.EOC}")
-    elif key.startswith(str(0)) and len(key) > 1:
-        print_descr(key)
+    elif templ.startswith(str(1)): #  Repeater
+        print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
+    elif templ.startswith(str(0)) and len(templ) > 1:
+        print_descr(templ)
 
 
 def print_descr(descr):
@@ -81,7 +81,7 @@ def print_descr(descr):
         for line in f:
             if re.match(descr, line):  # match descriptor
                 final = line.split("|")
-                print(f"{bcolors.GREEN}\t{final[0]}{bcolors.EOC}-->{final[1]}")
+                print(f"{bcolors.GREEN}\t{final[0]}{bcolors.EOC} --> {final[1]}")
                 break
 
 
