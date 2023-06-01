@@ -13,6 +13,7 @@ already_read = []
 
 class bcolors:
     PURPLE = "\033[95m"
+    RED = "\033[91m"
     BLUE = "\033[94m"
     GREEN = "\033[92m"
     EOC = "\033[0m"
@@ -62,12 +63,12 @@ def read_sequence(sequence):
 
 def print_content(templ):
     """
-    Print sequence, repeater or element
+    Print sequence, operator, replication or element
     """
     if templ.startswith(str(3)) and len(templ) == 6: #  e.g. 307080
         resolve_sequence(templ)  #  We need to go deeper
-    # elif templ.startswith(str(2)):
-    #    print("Operator")
+    elif templ.startswith(str(2)):
+        print(f"{bcolors.RED}  [{templ}]{bcolors.EOC}")
     elif templ.startswith(str(1)): #  Repeater
         print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
     elif templ.startswith(str(0)) and len(templ) > 1:
@@ -78,7 +79,7 @@ def print_content(templ):
 
 def print_descr(descr):
     """
-    Print the final bufr descriptor. No more inner levels.
+    Print the final bufr element (eccodes key). No more inner levels.
     """
     with open(elementfile) as f:
         for line in f:
