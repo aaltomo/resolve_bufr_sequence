@@ -40,36 +40,40 @@ def read_sequence(sequence):
     """
     end = "]"  # read until char, can be on the next line
     elements = []
-    with open(seqfile, "r") as fp:
-        started = False
-        for line in fp:
-            if started:
-                result = re.split(r"\W+", line)
-                for n in result:
-                    elements.append(n)
-            if end in line:
-                started = False
-            if re.match(rf"^\"{sequence}\" =", line):  # match sequence
-                result = re.split(r"\W+", line)
-                for n in result:
-                    elements.append(n)
-                if end in line:  # Can end on the same line or next
+    try:
+        with open(seqfile, "r") as fp:
+            started = False
+            for line in fp:
+                if started:
+                    result = re.split(r"\W+", line)
+                    for n in result:
+                        elements.append(n)
+                if end in line:
                     started = False
-                else:
-                    started = True
-        elements = list(filter(None, elements)) #  Remove empty
-        return elements
+                if re.match(rf"^\"{sequence}\" =", line):  # match sequence
+                    result = re.split(r"\W+", line)
+                    for n in result:
+                        elements.append(n)
+                    if end in line:  # Can end on the same line or next
+                        started = False
+                    else:
+                        started = True
+            elements = list(filter(None, elements))  #  Remove empty
+            return elements
+    except FileNotFoundError:
+        print("Cannot find eccodes files. Is the library installed?")
+        sys.exit(1)
 
 
 def print_content(templ):
     """
     Print sequence, operator, replication or element
     """
-    if templ.startswith(str(3)) and len(templ) == 6: #  e.g. 307080
+    if templ.startswith(str(3)) and len(templ) == 6:  #  e.g. 307080
         resolve_sequence(templ)  #  We need to go deeper
     elif templ.startswith(str(2)):
         print(f"{bcolors.RED}  [{templ}]{bcolors.EOC}")
-    elif templ.startswith(str(1)): #  Repeater
+    elif templ.startswith(str(1)):  #  Repeater
         print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
     elif templ.startswith(str(0)) and len(templ) > 1:
         print_descr(templ)
@@ -109,8 +113,12 @@ if __name__ == "__main__":
     centrefile = f"{root}/0/wmo/{wmo_table_number}/codetables/1033.table"
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--sequence", help="BUFR sequence to decode (e.g. 307080)")
-    parser.add_argument("-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)")
+    parser.add_argument(
+        "-s", "--sequence", help="BUFR sequence to decode (e.g. 307080)"
+    )
+    parser.add_argument(
+        "-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)"
+    )
     parser.add_argument("-c", "--centre", help="BUFR centre to decode")
 
     args = parser.parse_args()
@@ -127,5 +135,5 @@ if __name__ == "__main__":
         print_centre(args.centre)
 
     if len(sys.argv) == 1:
-        print(f"usage: {sys.argv[0]} BUFR-sequence (e.g. 307080)")
+        # print(f"usage: {sys.argv[0]} BUFR-sequence (e.g. 307080)")
         sys.exit(1)
