@@ -37,27 +37,29 @@ def read_sequence(sequence):
     """
     Read BUFR sequence number from line.
     Can include other sequences.
+    Example from file:
+    "301022" = [  005001, 006001, 007001 ]
     """
-    end = "]"  # read until char, can be on the next line
+    endchar = "]"  # read until char, can be on the next line
     elements = []
     try:
         with open(seqfile, "r") as fp:
-            started = False
+            goto_next_line = False
             for line in fp:
-                if started:
+                if goto_next_line:
                     result = re.split(r"\W+", line)
                     for n in result:
                         elements.append(n)
-                if end in line:
-                    started = False
+                if endchar in line:
+                    goto_next_line = False
                 if re.match(rf"^\"{sequence}\" =", line):  # match sequence
                     result = re.split(r"\W+", line)
                     for n in result:
                         elements.append(n)
-                    if end in line:  # Can end on the same line or next
-                        started = False
+                    if endchar in line:  # Can end on the same line or next
+                        goto_next_line = False
                     else:
-                        started = True
+                        goto_next_line = True
             elements = list(filter(None, elements))  #  Remove empty
             return elements
     except FileNotFoundError:
@@ -84,6 +86,8 @@ def print_content(templ):
 def print_descr(descr):
     """
     Print the final bufr element (eccodes key). No more inner levels.
+    Example: 
+    007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
     with open(elementfile) as f:
         for line in f:
@@ -106,11 +110,11 @@ def print_centre(id):
 
 if __name__ == "__main__":
     # Paths to eccodes sequences and elements
-    root = "/usr/local/share/eccodes/definitions/bufr/tables/"
-    wmo_table_number = "36"  # latest
-    seqfile = f"{root}/0/wmo/{wmo_table_number}/sequence.def"
-    elementfile = f"{root}/0/wmo/{wmo_table_number}/element.table"
-    centrefile = f"{root}/0/wmo/{wmo_table_number}/codetables/1033.table"
+    root = "/usr/local/share/eccodes/definitions/bufr/tables/0/wmo"
+    wmo_table_number = "41"  # latest atm.
+    seqfile = f"{root}/{wmo_table_number}/sequence.def"
+    elementfile = f"{root}/{wmo_table_number}/element.table"
+    centrefile = f"{root}/{wmo_table_number}/codetables/1033.table"
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
