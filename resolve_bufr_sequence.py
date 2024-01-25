@@ -7,7 +7,7 @@ installed in order to work.
 import re
 import sys
 import argparse
-import typing
+from typing import List
 
 already_read = []
 
@@ -34,7 +34,7 @@ def resolve_sequence(sequence: str) -> None:
             print_content(t)
 
 
-def read_sequence(sequence: str) -> typing.List[str]:
+def read_sequence(sequence: str) -> List[str]:
     """
     Read BUFR sequence number from line.
     Can include other sequences.
