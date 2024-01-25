@@ -68,7 +68,7 @@ def read_sequence(sequence: str) -> typing.List[str]:
         sys.exit(1)
 
 
-def print_content(templ: int) -> None:
+def print_content(templ: str) -> None:
     """
     Print sequence, operator, replication or element
     """
