@@ -7,6 +7,7 @@ installed in order to work.
 import re
 import sys
 import argparse
+import typing
 
 already_read = []
 
@@ -19,7 +20,7 @@ class bcolors:
     EOC = "\033[0m"
 
 
-def resolve_sequence(sequence):
+def resolve_sequence(sequence: str) -> None:
     """
     Resolve a BUFR sequence. Omit sequences that have already printed.
     """
@@ -33,7 +34,7 @@ def resolve_sequence(sequence):
             print_content(t)
 
 
-def read_sequence(sequence):
+def read_sequence(sequence: str) -> typing.List[str]:
     """
     Read BUFR sequence number from line.
     Can include other sequences.
@@ -67,7 +68,7 @@ def read_sequence(sequence):
         sys.exit(1)
 
 
-def print_content(templ):
+def print_content(templ: int) -> None:
     """
     Print sequence, operator, replication or element
     """
@@ -83,7 +84,7 @@ def print_content(templ):
         print(f"No match for {templ}? Strange.")
 
 
-def print_descr(descr):
+def print_descr(descr: str) -> None:
     """
     Print the final bufr element (eccodes key). No more inner levels.
     Example: 
@@ -97,7 +98,7 @@ def print_descr(descr):
                 break
 
 
-def print_centre(id):
+def print_centre(id: str) -> None:
     """
     Print the centre
     """
