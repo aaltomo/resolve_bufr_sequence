@@ -27,11 +27,15 @@ def resolve_sequence(sequence: str) -> None:
     if sequence in already_read:
         pass
     else:
-        print(f"{bcolors.BLUE}[{sequence}]{bcolors.EOC}")
+        if not args.minimum:
+            print(f"{bcolors.BLUE}[{sequence}]{bcolors.EOC}")
         already_read.append(sequence)
         template = read_sequence(sequence)
+        if not template:
+            print(f"Nothing found for sequence: {sequence}")
+            sys.exit(0)
         for t in template:
-            print_content(t)
+            print(f"{bcolors.BLUE}[{t}]{bcolors.EOC}") if args.minimum else print_content(t)
 
 
 def read_sequence(sequence: str) -> List[str]:
@@ -125,6 +129,7 @@ if __name__ == "__main__":
         "-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)"
     )
     parser.add_argument("-c", "--centre", help="BUFR centre to decode")
+    parser.add_argument("-m", "--minimum", help="Just show what table entries the sequence includes. Don't resolve values.", action="store_true")
 
     args = parser.parse_args()
 
