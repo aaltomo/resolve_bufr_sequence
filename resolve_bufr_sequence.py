@@ -9,7 +9,7 @@ import sys
 import argparse
 from typing import List
 
-already_read = []
+already_read = []  # type: List[str]
 
 
 class bcolors:
@@ -35,7 +35,9 @@ def resolve_sequence(sequence: str) -> None:
             print(f"Nothing found for sequence: {sequence}")
             sys.exit(0)
         for t in template:
-            print(f"{bcolors.BLUE}[{t}]{bcolors.EOC}") if args.minimum else print_content(t)
+            print(
+                f"{bcolors.BLUE}[{t}]{bcolors.EOC}"
+            ) if args.minimum else print_content(t)
 
 
 def read_sequence(sequence: str) -> List[str]:
@@ -91,7 +93,7 @@ def print_content(templ: str) -> None:
 def print_descr(descr: str) -> None:
     """
     Print the final bufr element (eccodes key). No more inner levels.
-    Example: 
+    Example:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
     with open(elementfile) as f:
@@ -129,7 +131,12 @@ if __name__ == "__main__":
         "-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)"
     )
     parser.add_argument("-c", "--centre", help="BUFR centre to decode")
-    parser.add_argument("-m", "--minimum", help="Just show what table entries the sequence includes. Don't resolve values.", action="store_true")
+    parser.add_argument(
+        "-m",
+        "--minimum",
+        help="Just show what table entries the sequence includes. Don't resolve values.",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
