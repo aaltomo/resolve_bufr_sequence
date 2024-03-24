@@ -63,11 +63,8 @@ def read_sequence(sequence: str) -> List[str]:
                     result = re.split(r"\W+", line)
                     for n in result:
                         elements.append(n)
-                    if endchar in line:  # Can end on the same line or next
-                        goto_next_line = False
-                    else:
-                        goto_next_line = True
-            elements = list(filter(None, elements))  #  Remove empty
+                    goto_next_line = False if endchar in line else True
+            elements = list(filter(None, elements))  # Remove empty
             return elements
     except FileNotFoundError:
         print("Cannot find eccodes files. Is the library installed?")
@@ -78,11 +75,11 @@ def print_content(templ: str) -> None:
     """
     Print sequence, operator, replication or element
     """
-    if templ.startswith(str(3)) and len(templ) == 6:  #  e.g. 307080
-        resolve_sequence(templ)  #  We need to go deeper
+    if templ.startswith(str(3)) and len(templ) == 6:  # e.g. 307080
+        resolve_sequence(templ)  # We need to go deeper
     elif templ.startswith(str(2)):
         print(f"{bcolors.RED}  [{templ}]{bcolors.EOC}")
-    elif templ.startswith(str(1)):  #  Repeater
+    elif templ.startswith(str(1)):  # Repeater
         print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
     elif templ.startswith(str(0)) and len(templ) > 1:
         print_descr(templ)
@@ -104,13 +101,13 @@ def print_descr(descr: str) -> None:
                 break
 
 
-def print_centre(id: str) -> None:
+def print_centre(centre_id: str) -> None:
     """
     Print the centre
     """
     with open(centrefile) as f:
         for line in f:
-            if re.match(id, line):  # match descriptor
+            if re.match(centre_id, line):  # match descriptor
                 print(f"{bcolors.GREEN}{line}{bcolors.EOC}")
                 break
 
@@ -138,10 +135,7 @@ if __name__ == "__main__":
         action="store_true",
     )
 
-    args = parser.parse_args()
-
-    if args is None:
-        sys.exit(1)
+    args = parser.parse_args(args=None if sys.argv[1:] else ['-h'])
 
     if args.sequence:
         print(f"Using: {root} with WMO tables {wmo_table_number}.")
@@ -150,7 +144,3 @@ if __name__ == "__main__":
         print_content(args.descriptor)
     elif args.centre:
         print_centre(args.centre)
-
-    if len(sys.argv) == 1:
-        # print(f"usage: {sys.argv[0]} BUFR-sequence (e.g. 307080)")
-        sys.exit(1)
