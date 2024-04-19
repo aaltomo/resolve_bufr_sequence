@@ -7,6 +7,7 @@ installed in order to work.
 import re
 import sys
 import argparse
+from pathlib import Path
 from typing import List
 
 already_read = []  # type: List[str]
@@ -50,7 +51,7 @@ def read_sequence(sequence: str) -> List[str]:
     endchar = "]"  # read until char, can be on the next line
     elements = []
     try:
-        with open(seqfile, "r") as fp:
+        with Path(seqfile).open("r") as fp:
             goto_next_line = False
             for line in fp:
                 if goto_next_line:
@@ -93,7 +94,7 @@ def print_descr(descr: str) -> None:
     Example:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
-    with open(elementfile) as f:
+    with Path(elementfile).open("r") as f:
         for line in f:
             if re.match(descr, line):  # match descriptor
                 final = line.split("|")
@@ -105,7 +106,7 @@ def print_centre(centre_id: str) -> None:
     """
     Print the centre
     """
-    with open(centrefile) as f:
+    with Path(centrefile).open("r") as f:
         for line in f:
             if re.match(centre_id, line):  # match descriptor
                 print(f"{bcolors.GREEN}{line}{bcolors.EOC}")
