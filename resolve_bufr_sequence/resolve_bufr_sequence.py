@@ -4,6 +4,7 @@ Resolve a bufr sequence aka. find out what elements
 should occur in BUFR template/sequence. Needs eccodes library
 installed in order to work.
 """
+
 import re
 import sys
 import argparse
@@ -36,9 +37,7 @@ def resolve_sequence(sequence: str) -> None:
             print(f"Nothing found for sequence: {sequence}")
             sys.exit(0)
         for t in template:
-            print(
-                f"{bcolors.BLUE}[{t}]{bcolors.EOC}"
-            ) if args.minimum else print_content(t)
+            print(f"{bcolors.BLUE}[{t}]{bcolors.EOC}") if args.minimum else print_content(t)
 
 
 def read_sequence(sequence: str) -> List[str]:
@@ -115,19 +114,16 @@ def print_centre(centre_id: str) -> None:
 
 if __name__ == "__main__":
     # Paths to eccodes sequences and elements
-    root = "/usr/local/share/eccodes/definitions/bufr/tables/0/wmo"
+    version = "2.35.0"  # Latest from brew
+    root = f"/opt/homebrew/Cellar/eccodes/{version}/share/eccodes/definitions/bufr/tables/0/wmo"
     wmo_table_number = "41"  # latest atm.
     seqfile = f"{root}/{wmo_table_number}/sequence.def"
     elementfile = f"{root}/{wmo_table_number}/element.table"
     centrefile = f"{root}/{wmo_table_number}/codetables/1033.table"
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-s", "--sequence", help="BUFR sequence to decode (e.g. 307080)"
-    )
-    parser.add_argument(
-        "-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)"
-    )
+    parser.add_argument("-s", "--sequence", help="BUFR sequence to decode (e.g. 307080)")
+    parser.add_argument("-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)")
     parser.add_argument("-c", "--centre", help="BUFR centre to decode")
     parser.add_argument(
         "-m",
@@ -136,7 +132,7 @@ if __name__ == "__main__":
         action="store_true",
     )
 
-    args = parser.parse_args(args=None if sys.argv[1:] else ['-h'])
+    args = parser.parse_args(args=None if sys.argv[1:] else ["-h"])
 
     if args.sequence:
         print(f"Using: {root} with WMO tables {wmo_table_number}.")

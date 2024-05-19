@@ -1,3 +1,22 @@
+[project]
+name = "resolve_bufr_sequence"
+version = "0.1.0"
+dependencies = ["pathlib","typing"]
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+mycli = "resolve_bufr_sequence.cli:main_cli"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+
 [tool.mypy]
 strict = true
 
