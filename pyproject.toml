@@ -19,6 +19,10 @@ testpaths = [
 
 [tool.mypy]
 strict = true
+exclude = [
+    'test_\.py$',
+]
+
 
 [tool.ruff]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
