@@ -20,7 +20,7 @@ testpaths = [
 [tool.mypy]
 strict = true
 exclude = [
-    'tests/test_\.py$',
+    "tests/test_all.py"
 ]
 
 
