@@ -2,9 +2,8 @@
 
 import pytest
 
-from resolve_bufr_sequence import read_sequence
+from resolve_bufr_sequence.resolve_bufr_sequence import read_sequence
 
-@pytest.fixture
 def test_read():
     template = read_sequence("307089")
-    assert template == "[  307087, 307088 ]"
+    assert template == [ "307089", "307087", "307088" ]
