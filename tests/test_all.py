@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import pytest
-
 from resolve_bufr_sequence.resolve_bufr_sequence import read_sequence
 
 def test_read():
