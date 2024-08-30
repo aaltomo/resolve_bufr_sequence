@@ -1,1 +1,0 @@
-"""BUFR sequence resolver."""
