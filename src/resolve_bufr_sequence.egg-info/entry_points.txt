@@ -1,2 +1,0 @@
-[console_scripts]
-resolve_bufr_sequence = resolve_bufr_sequence:main
