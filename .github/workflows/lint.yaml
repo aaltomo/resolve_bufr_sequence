@@ -30,7 +30,7 @@ jobs:
       - name: Run mypy
         run: pipenv run mypy .
 
-   test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
