@@ -1,7 +1,7 @@
 [project]
 name = "resolve_bufr_sequence"
 version = "0.1.0"
-dependencies = ["pathlib", "typing", "argparse"]
+dependencies = ["pathlib", "typing", "pytest"]
 requires-python = ">=3.11"
 
 [build-system]
