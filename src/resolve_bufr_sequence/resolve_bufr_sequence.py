@@ -100,7 +100,7 @@ def print_descr(descr: str) -> None:
     Example:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
-    final = ""
+    final = []
     with Path(ELEMENT_FILE).open("r") as f:
         for line in f:
             if re.match(descr, line):  # match descriptor
@@ -142,7 +142,7 @@ def resolve_bufr_sequence() -> None:
 
     if args.sequence:
         print(f"Using: {ROOT} with WMO tables {WMO_TABLE_NUMBER}.")
-        print(f"Sequence -->")
+        print("Sequence -->")
         resolve_sequence(args.sequence, minimum)
     elif args.descriptor:
         print_content(args.descriptor, minimum)
