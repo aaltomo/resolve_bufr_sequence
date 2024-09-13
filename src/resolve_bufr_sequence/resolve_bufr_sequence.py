@@ -12,8 +12,8 @@ from pathlib import Path
 from typing import List
 
 already_read = []  # type: List[str]
-#CODES_VERSION = "2.37.0"  # Latest from brew
-#ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
+# CODES_VERSION = "2.37.0"  # Latest from brew
+# ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
 ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
 WMO_TABLE_NUMBER = "37"  # latest atm.
 SEQUENCE_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/sequence.def"
@@ -100,12 +100,16 @@ def print_descr(descr: str) -> None:
     Example:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
+    final = ""
     with Path(ELEMENT_FILE).open("r") as f:
         for line in f:
             if re.match(descr, line):  # match descriptor
                 final = line.split("|")
-                print(f"{bcolors.GREEN}\t{final[0]}{bcolors.EOC} --> {final[1]}")
                 break
+        if not final:
+            print(f"Descriptor: {descr} not found?")
+        else:
+            print(f"{bcolors.GREEN}\t{final[0]}{bcolors.EOC} --> {final[1]}")
 
 
 def print_centre(centre_id: str) -> None:
@@ -138,6 +142,7 @@ def resolve_bufr_sequence() -> None:
 
     if args.sequence:
         print(f"Using: {ROOT} with WMO tables {WMO_TABLE_NUMBER}.")
+        print(f"Sequence -->")
         resolve_sequence(args.sequence, minimum)
     elif args.descriptor:
         print_content(args.descriptor, minimum)
