@@ -38,6 +38,10 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v2
 
+      - name: Install eccodes
+        run: |
+          apt install libeccodes-tools
+
       - name: Set up Python
         run: uv python install
 

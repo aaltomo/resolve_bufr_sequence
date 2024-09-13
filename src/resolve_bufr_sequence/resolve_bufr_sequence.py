@@ -12,9 +12,10 @@ from pathlib import Path
 from typing import List
 
 already_read = []  # type: List[str]
-CODES_VERSION = "2.37.0"  # Latest from brew
-ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
-WMO_TABLE_NUMBER = "41"  # latest atm.
+#CODES_VERSION = "2.37.0"  # Latest from brew
+#ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
+ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
+WMO_TABLE_NUMBER = "37"  # latest atm.
 SEQUENCE_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/sequence.def"
 ELEMENT_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/element.table"
 CENTRE_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/codetables/1033.table"
