@@ -40,7 +40,7 @@ jobs:
 
       - name: Install eccodes
         run: |
-          apt install libeccodes-tools
+          sudo apt install libeccodes-tools
 
       - name: Set up Python
         run: uv python install
