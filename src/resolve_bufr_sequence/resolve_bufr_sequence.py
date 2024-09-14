@@ -89,12 +89,12 @@ def print_content(templ: str, minimum: bool) -> None:
     elif templ.startswith(str(1)):  # Repeater
         print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
     elif templ.startswith(str(0)) and len(templ) > 1:
-        print_descr(templ)
+        print_descriptor(templ)
     else:
         print(f"No match for {templ}? Strange.")
 
 
-def print_descr(descr: str) -> None:
+def print_descriptor(descr: str) -> None:
     """
     Print the final bufr element (eccodes key). No more inner levels.
     Example:
@@ -145,7 +145,7 @@ def resolve_bufr_sequence() -> None:
         print("Sequence -->")
         resolve_sequence(args.sequence, minimum)
     elif args.descriptor:
-        print_content(args.descriptor, minimum)
+        print_descriptor(args.descriptor)
     elif args.centre:
         print_centre(args.centre)
 
