@@ -37,14 +37,18 @@ def resolve_sequence(sequence: str, minimum: bool) -> None:
         pass
     else:
         if not minimum:
-            print(f"{bcolors.BLUE}[{sequence}]{bcolors.EOC}")
+            print_blue(sequence)
         already_read.append(sequence)
+
         template = read_sequence(sequence)
         if not template:
             print(f"Nothing found for sequence: {sequence}")
             sys.exit(0)
         for t in template:
-            print(f"{bcolors.BLUE}[{t}]{bcolors.EOC}") if minimum else print_content(t, minimum)
+            if t.startswith(str(3)) and len(t) == 6:  # e.g. 307080
+                resolve_sequence(t, minimum, first=False)  # We need to go deeper
+            else:
+                print_blue(t) if minimum else print_content(t, minimum)
 
 
 def read_sequence(sequence: str) -> List[str]:
@@ -78,16 +82,31 @@ def read_sequence(sequence: str) -> List[str]:
         sys.exit(1)
 
 
+def print_green(txt: List) -> None:
+    print(f"{bcolors.GREEN}\t{txt[0]}{bcolors.EOC} --> {txt[1]}")
+
+
+def print_red(txt: str) -> None:
+    print(f"{bcolors.RED}  {txt}{bcolors.EOC}")
+
+
+def print_purple(txt: str) -> None:
+    print(f"{bcolors.PURPLE}    {txt}{bcolors.EOC}")
+
+
+def print_blue(txt: str) -> None:
+    print(f"{bcolors.BLUE}[{txt}]{bcolors.EOC}")
+
+
 def print_content(templ: str, minimum: bool) -> None:
     """
     Print sequence, operator, replication or element
     """
-    if templ.startswith(str(3)) and len(templ) == 6:  # e.g. 307080
-        resolve_sequence(templ, minimum)  # We need to go deeper
-    elif templ.startswith(str(2)):
-        print(f"{bcolors.RED}  [{templ}]{bcolors.EOC}")
+
+    if templ.startswith(str(2)):
+        print_red(templ)
     elif templ.startswith(str(1)):  # Repeater
-        print(f"{bcolors.PURPLE}    [{templ}]{bcolors.EOC}")
+        print_purple(templ)
     elif templ.startswith(str(0)) and len(templ) > 1:
         print_descriptor(templ)
     else:
@@ -109,7 +128,7 @@ def print_descriptor(descr: str) -> None:
         if not final:
             print(f"Descriptor: {descr} not found?")
         else:
-            print(f"{bcolors.GREEN}\t{final[0]}{bcolors.EOC} --> {final[1]}")
+            print_green(final)
 
 
 def print_centre(centre_id: str) -> None:
@@ -119,7 +138,7 @@ def print_centre(centre_id: str) -> None:
     with Path(CENTRE_FILE).open("r") as f:
         for line in f:
             if re.match(centre_id, line):  # match descriptor
-                print(f"{bcolors.GREEN}{line}{bcolors.EOC}")
+                print_purple(line)
                 break
 
 
