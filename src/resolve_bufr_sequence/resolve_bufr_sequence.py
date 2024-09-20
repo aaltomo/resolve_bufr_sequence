@@ -46,7 +46,7 @@ def resolve_sequence(sequence: str, minimum: bool) -> None:
             sys.exit(0)
         for t in template:
             if t.startswith(str(3)) and len(t) == 6:  # e.g. 307080
-                resolve_sequence(t, minimum, first=False)  # We need to go deeper
+                resolve_sequence(t, minimum)  # We need to go deeper
             else:
                 print_blue(t) if minimum else print_content(t, minimum)
 
@@ -82,7 +82,7 @@ def read_sequence(sequence: str) -> List[str]:
         sys.exit(1)
 
 
-def print_green(txt: List) -> None:
+def print_green(txt: List[str]) -> None:
     print(f"{bcolors.GREEN}\t{txt[0]}{bcolors.EOC} --> {txt[1]}")
 
 
