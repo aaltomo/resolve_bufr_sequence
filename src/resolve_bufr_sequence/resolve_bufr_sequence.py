@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 from typing import List
 from typing import Dict
+from typing import Any
 
 
 # CODES_VERSION = "2.39.0"  # Latest from brew
@@ -42,7 +43,7 @@ def resolve_sequence(sequence: str, show_as_json: bool) -> None:
         resolve_descriptor(template)
 
 
-def resolve_descriptor(mydict: Dict[str, List]) -> None:
+def resolve_descriptor(mydict: Dict[str, List[str]]) -> None:
     """
     Resolve the final descriptor. Recursive if item is a dict.
     """
@@ -55,15 +56,15 @@ def resolve_descriptor(mydict: Dict[str, List]) -> None:
                 resolve_descriptor(v)  # dict
 
 
-def is_sequence(seq: str):
+def is_sequence(seq: str) -> bool:
     return True if seq.startswith("3") else False
 
 
 # def read_sequence(sequence: str) -> List[str]:
-def read_sequence(sequence_number: str) -> Dict[str, List]:
+def read_sequence(sequence_number: str) -> Dict[str, Any]:
     """
     Read BUFR sequence number from line.
-    Can include other sequences. Function is recursive.
+    Can include other sequences(dicts). Function is recursive.
     Example from file:
     "301022" = [  005001, 006001, 007001 ]
     Return dict = {'301022': ["005001", "006001", "007001"]}
