@@ -8,11 +8,13 @@ installed in order to work.
 import re
 import sys
 import argparse
+import json
 from pathlib import Path
 from typing import List
+from typing import Dict
 
-already_read = []  # type: List[str]
-# CODES_VERSION = "2.37.0"  # Latest from brew
+
+# CODES_VERSION = "2.39.0"  # Latest from brew
 # ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
 ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
 WMO_TABLE_NUMBER = "37"  # latest atm.
@@ -29,37 +31,46 @@ class bcolors:
     EOC = "\033[0m"
 
 
-def resolve_sequence(sequence: str, minimum: bool) -> None:
+def resolve_sequence(sequence: str, show_as_json: bool) -> None:
     """
     Resolve a BUFR sequence. Omit sequences that have already printed.
     """
-    if sequence in already_read:
-        pass
+    template = read_sequence(sequence)
+    if show_as_json:
+        print(json.dumps(template, indent=4))
     else:
-        if not minimum:
-            print_blue(sequence)
-        already_read.append(sequence)
+        resolve_descriptor(template)
 
-        template = read_sequence(sequence)
-        if not template:
-            print(f"Nothing found for sequence: {sequence}")
-            sys.exit(0)
-        for t in template:
-            if t.startswith(str(3)) and len(t) == 6:  # e.g. 307080
-                resolve_sequence(t, minimum)  # We need to go deeper
+
+def resolve_descriptor(mydict: Dict[str, List]) -> None:
+    """
+    Resolve the final descriptor. Recursive if item is a dict.
+    """
+    for key, val in mydict.items():
+        print_blue(key)  # Descriptor dict key
+        for v in val:
+            if isinstance(v, str):
+                print_content(v)
             else:
-                print_blue(t) if minimum else print_content(t, minimum)
+                resolve_descriptor(v)  # dict
 
 
-def read_sequence(sequence: str) -> List[str]:
+def is_sequence(seq: str):
+    return True if seq.startswith("3") else False
+
+
+# def read_sequence(sequence: str) -> List[str]:
+def read_sequence(sequence_number: str) -> Dict[str, List]:
     """
     Read BUFR sequence number from line.
-    Can include other sequences.
+    Can include other sequences. Function is recursive.
     Example from file:
     "301022" = [  005001, 006001, 007001 ]
+    Return dict = {'301022': ["005001", "006001", "007001"]}
     """
     endchar = "]"  # read until char, can be on the next line
     elements = []
+    elem_dict = {}
     try:
         with Path(SEQUENCE_FILE).open("r") as fp:
             goto_next_line = False
@@ -67,16 +78,27 @@ def read_sequence(sequence: str) -> List[str]:
                 if goto_next_line:
                     result = re.split(r"\W+", line)
                     for n in result:
-                        elements.append(n)
+                        if is_sequence(n):  # can include other sequences
+                            tmp = read_sequence(n)
+                            elements.append(tmp)
+                        else:
+                            elements.append(n)
                 if endchar in line:
                     goto_next_line = False
-                if re.match(rf"^\"{sequence}\" =", line):  # match sequence
+                if re.match(rf"^\"{sequence_number}\" =", line):  # match sequence
                     result = re.split(r"\W+", line)
                     for n in result:
-                        elements.append(n)
+                        # print(f"result:{n}")
+                        if n != sequence_number:
+                            if is_sequence(n):  # can include other sequences
+                                tmp = read_sequence(n)
+                                elements.append(tmp)
+                            else:
+                                elements.append(n)
                     goto_next_line = False if endchar in line else True
             elements = list(filter(None, elements))  # Remove empty
-            return elements
+            elem_dict[sequence_number] = elements
+            return elem_dict
     except FileNotFoundError:
         print("Cannot find eccodes files. Is the library installed?")
         sys.exit(1)
@@ -98,7 +120,7 @@ def print_blue(txt: str) -> None:
     print(f"{bcolors.BLUE}[{txt}]{bcolors.EOC}")
 
 
-def print_content(templ: str, minimum: bool) -> None:
+def print_content(templ: str) -> None:
     """
     Print sequence, operator, replication or element
     """
@@ -120,6 +142,7 @@ def print_descriptor(descr: str) -> None:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
     final = []
+    # print(f"Got desc: {descr}")
     with Path(ELEMENT_FILE).open("r") as f:
         for line in f:
             if re.match(descr, line):  # match descriptor
@@ -150,19 +173,19 @@ def resolve_bufr_sequence() -> None:
     parser.add_argument("-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)")
     parser.add_argument("-c", "--centre", help="BUFR centre to decode")
     parser.add_argument(
-        "-m",
-        "--minimum",
-        help="Just show what table entries the sequence includes. Don't resolve values.",
+        "-j",
+        "--show_json",
+        help="Show JSON version of table entries the sequence includes. Don't resolve values.",
         action="store_true",
     )
 
     args = parser.parse_args(args=None if sys.argv[1:] else ["-h"])
-    minimum = False if not args.minimum else True
+    show_json = False if not args.show_json else True
 
     if args.sequence:
         print(f"Using: {ROOT} with WMO tables {WMO_TABLE_NUMBER}.")
         print("Sequence -->")
-        resolve_sequence(args.sequence, minimum)
+        resolve_sequence(args.sequence, show_json)
     elif args.descriptor:
         print_descriptor(args.descriptor)
     elif args.centre:
