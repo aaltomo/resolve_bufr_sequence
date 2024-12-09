@@ -10,14 +10,12 @@ import sys
 import argparse
 import json
 from pathlib import Path
-from typing import List
-from typing import Dict
 from typing import Any
 
 
-# CODES_VERSION = "2.39.0"  # Latest from brew
-# ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
-ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
+CODES_VERSION = "2.39.0"  # Latest from brew
+ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
+# ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
 WMO_TABLE_NUMBER = "37"  # latest atm.
 SEQUENCE_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/sequence.def"
 ELEMENT_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/element.table"
@@ -36,18 +34,18 @@ def resolve_sequence(sequence: str, show_as_json: bool) -> None:
     """
     Resolve a BUFR sequence. Omit sequences that have already printed.
     """
-    template = read_sequence(sequence)
+    data: dict[str, Any] = read_sequence(sequence)
     if show_as_json:
-        print(json.dumps(template, indent=4))
+        print(json.dumps(data, indent=4))
     else:
-        resolve_descriptor(template)
+        resolve_descriptor(data)
 
 
-def resolve_descriptor(mydict: Dict[str, List[str]]) -> None:
+def resolve_descriptor(desc_dict: dict[str, list[str]]) -> None:
     """
     Resolve the final descriptor. Recursive if item is a dict.
     """
-    for key, val in mydict.items():
+    for key, val in desc_dict.items():
         print_blue(key)  # Descriptor dict key
         for v in val:
             if isinstance(v, str):
@@ -60,8 +58,7 @@ def is_sequence(seq: str) -> bool:
     return True if seq.startswith("3") else False
 
 
-# def read_sequence(sequence: str) -> List[str]:
-def read_sequence(sequence_number: str) -> Dict[str, Any]:
+def read_sequence(sequence_number: str) -> dict[str, Any]:
     """
     Read BUFR sequence number from line.
     Can include other sequences(dicts). Function is recursive.
@@ -69,9 +66,9 @@ def read_sequence(sequence_number: str) -> Dict[str, Any]:
     "301022" = [  005001, 006001, 007001 ]
     Return dict = {'301022': ["005001", "006001", "007001"]}
     """
-    endchar = "]"  # read until char, can be on the next line
-    elements = []
-    elem_dict = {}
+    endchar: str = "]"  # read until char, can be on the next line
+    elements: list[str | dict[str, Any]] = []
+    elem_dict: dict[str, Any] = {}
     try:
         with Path(SEQUENCE_FILE).open("r") as fp:
             goto_next_line = False
@@ -89,7 +86,6 @@ def read_sequence(sequence_number: str) -> Dict[str, Any]:
                 if re.match(rf"^\"{sequence_number}\" =", line):  # match sequence
                     result = re.split(r"\W+", line)
                     for n in result:
-                        # print(f"result:{n}")
                         if n != sequence_number:
                             if is_sequence(n):  # can include other sequences
                                 tmp = read_sequence(n)
@@ -105,7 +101,7 @@ def read_sequence(sequence_number: str) -> Dict[str, Any]:
         sys.exit(1)
 
 
-def print_green(txt: List[str]) -> None:
+def print_green(txt: list[str]) -> None:
     print(f"{bcolors.GREEN}\t{txt[0]}{bcolors.EOC} --> {txt[1]}")
 
 
@@ -142,7 +138,7 @@ def print_descriptor(descr: str) -> None:
     Example:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
-    final = []
+    final: list[str] = []
     # print(f"Got desc: {descr}")
     with Path(ELEMENT_FILE).open("r") as f:
         for line in f:
