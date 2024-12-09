@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 
-CODES_VERSION = "2.39.0"  # Latest from brew
-ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
-# ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
+# CODES_VERSION = "2.39.0"  # Latest from brew
+# ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
+ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
 WMO_TABLE_NUMBER = "37"  # latest atm.
 SEQUENCE_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/sequence.def"
 ELEMENT_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/element.table"
