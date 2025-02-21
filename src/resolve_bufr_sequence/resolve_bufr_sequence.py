@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 
-# CODES_VERSION = "2.39.0"  # Latest from brew
-# ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
-ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
+CODES_VERSION = "2.40.0"  # Latest from brew
+ROOT = f"/opt/homebrew/Cellar/eccodes/{CODES_VERSION}/share/eccodes/definitions/bufr/tables/0/wmo"
+# ROOT = "/usr/share/eccodes/definitions/bufr/tables/0/wmo"
 WMO_TABLE_NUMBER = "37"  # latest atm.
 SEQUENCE_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/sequence.def"
 ELEMENT_FILE = f"{ROOT}/{WMO_TABLE_NUMBER}/element.table"
@@ -139,7 +139,6 @@ def print_descriptor(descr: str) -> None:
     007002|height|long|HEIGHT OR ALTITUDE|m|-1|-40|16|m|-1|5
     """
     final: list[str] = []
-    # print(f"Got desc: {descr}")
     with Path(ELEMENT_FILE).open("r") as f:
         for line in f:
             if re.match(descr, line):  # match descriptor
@@ -164,7 +163,6 @@ def print_centre(centre_id: str) -> None:
 
 def resolve_bufr_sequence() -> None:
     # Paths to eccodes sequences and elements
-
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--sequence", help="BUFR sequence to decode (e.g. 307080)")
     parser.add_argument("-d", "--descriptor", help="BUFR descriptor to decode (e.g. 007001)")
