@@ -9,9 +9,9 @@ import sys
 import argparse
 import json
 
-from resolve_bufr_sequence.config import config
-from resolve_bufr_sequence.io_utils import reader
-from resolve_bufr_sequence.formatter import formatter
+from .config import config
+from .io_utils import reader
+from .formatter import formatter
 
 
 def resolve_sequence(sequence: str, show_as_json: bool) -> None:

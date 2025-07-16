@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Set
 
-from resolve_bufr_sequence.config import config
+from .config import config
 
 
 class FileCache:

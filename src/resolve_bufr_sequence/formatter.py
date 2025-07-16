@@ -7,7 +7,7 @@ Handles display formatting with color coding.
 import json
 from typing import Any, Dict, List
 
-from resolve_bufr_sequence.io_utils import reader
+from .io_utils import reader
 
 
 class BColors:

@@ -3,10 +3,10 @@ Resolve BUFR sequence package.
 Finds out what elements should occur in BUFR template/sequence.
 """
 
-from resolve_bufr_sequence.resolve_bufr_sequence import resolve_bufr_sequence
-from resolve_bufr_sequence.io_utils import reader
-from resolve_bufr_sequence.formatter import formatter
-from resolve_bufr_sequence.config import config
+from .resolve_bufr_sequence import resolve_bufr_sequence
+from .io_utils import reader
+from .formatter import formatter
+from .config import config
 
 
 def main() -> None:

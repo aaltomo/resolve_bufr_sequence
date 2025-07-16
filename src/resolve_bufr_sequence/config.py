@@ -14,7 +14,7 @@ class Config:
 
     def __init__(self) -> None:
         # Default configuration
-        self.codes_version = os.environ.get("ECCODES_VERSION", "2.41.0")
+        self.codes_version = os.environ.get("ECCODES_VERSION", "2.42.0")
         self.wmo_table_number = os.environ.get("WMO_TABLE_NUMBER", "37")
 
         # Determine the root path based on OS
