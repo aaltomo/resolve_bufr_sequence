@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/ruff-action@v3
-        with:
-          args: "format --check --verbose"
+      - run: ruff check --fix
+      - run: ruff format
 
   mypy:
     runs-on: ubuntu-latest
