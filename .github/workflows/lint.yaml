@@ -5,42 +5,35 @@ on:
       - main
   pull_request:
 jobs:
-  ruff:
+  tyandruff:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-          version: "latest"
-      - run: ruff check --fix
-      - run: ruff format
 
-  mypy:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@v4
-
+      - name: Check out repository
+        uses: actions/checkout@v6
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13
 
-      - name: Install pipenv
-        run: pip install pipenv
+      - uses: astral-sh/setup-uv@v7
 
-      - name: Install dependencies
-        run: pipenv install --dev
+      - name: Ruff lint
+        run: uvx ruff check --output-format=github .
 
-      - name: Run mypy
-        run: pipenv run mypy .
+      - name: Ruff format
+        run: uvx ruff format --check --verbose .
+
+      - name: Type check
+        run: uvx ty check .
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
 
       - name: Install eccodes
         run: |
